@@ -73,6 +73,25 @@ server.delete('/api/users/:id', (req, res) => {
         })
 });
 
+server.put('/api/users/:id', (req, res) => {
+    const userId = req.params.id
+    const updatedUser = req.body
+
+    if(!updatedUser.name || !updatedUser.bio) {
+        return res.status(400).json({success: false, message: "Please provide name and bio for the user."})
+    }
+    db
+        .update(userId, updatedUser)
+        .then(updated => {
+            if(updated) {
+                res.status(200).json({ success: true, updated})
+            }
+            res.status(404).json({ success: false, message: "No"})
+        })
+        .catch(() => {
+            res.status(500).json({ error: "The user information could not be modified." } )
+        })
+});
 server.listen('4000', () => {
     console.log('Server listening on port 4000')
 })
