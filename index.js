@@ -41,13 +41,14 @@ server.get('/api/users/:id', (req, res) => {
 
 server.post('/api/users', (req, res) => {
     const hobbit = req.body;
-
+    const { name, bio } = req.body;
+    if (!name|| !bio) {
+        return res.status(400).json({success: false, message: "Please provide name and bio for the user."})
+    }
     db
         .insert(hobbit)
         .then(hobbit => {
-            if (hobbit.name === null || hobbit.bio === null) {
-                res.status(400).json({success: false, message: "Please provide name and bio for the user."}).end()
-            }
+
             res.status(201).json({success: true, hobbit});
         })
         .catch( ( { code, message } )  => {
